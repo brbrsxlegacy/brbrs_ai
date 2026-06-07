@@ -1,0 +1,20 @@
+{
+  "name": "brbrs-ai-pro",
+  "version": "2.0.0",
+  "description": "brbrs AI neon chat with Groq backend and Firebase Realtime Database history",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "openai": "^6.39.1"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

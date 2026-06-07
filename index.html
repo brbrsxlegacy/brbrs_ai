@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>brbrs AI Pro</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#04040c;
+  --panel:rgba(12,12,30,.72);
+  --cyan:#00ffe5;
+  --blue:#0091ff;
+  --pink:#ff00e6;
+  --text:#ffffff;
+  --muted:#a9b1c7;
+  --danger:#ff4d6d;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;
+  font-family:Inter,Arial,sans-serif;
+  color:var(--text);
+  background:
+    radial-gradient(circle at 10% 20%, rgba(0,255,229,.18), transparent 30%),
+    radial-gradient(circle at 90% 10%, rgba(255,0,230,.15), transparent 28%),
+    radial-gradient(circle at 50% 100%, rgba(0,145,255,.15), transparent 28%),
+    linear-gradient(135deg,#020208,#090922 48%,#03030d);
+
+  overflow-y:auto;
+  overflow-x:hidden;
+}
+#particles{
+  position:fixed; inset:0; pointer-events:none; opacity:.55;
+  background-image:
+    radial-gradient(circle,#00ffe5 1px,transparent 1px),
+    radial-gradient(circle,#ff00e6 1px,transparent 1px);
+  background-size:70px 70px,110px 110px;
+  animation: drift 16s linear infinite;
+}
+@keyframes drift{to{transform:translate3d(60px,90px,0)}}
+.app{height:100vh;display:grid;grid-template-columns:280px 1fr;position:relative;z-index:1}
+.sidebar{
+  background:rgba(0,0,0,.32); backdrop-filter:blur(18px);
+  border-right:1px solid rgba(0,255,229,.22);
+  padding:18px; display:flex; flex-direction:column; gap:14px;
+}
+.brand{display:flex;align-items:center;gap:12px}
+.logo{
+  width:44px;height:44px;border-radius:16px;
+  display:grid;place-items:center;font-weight:900;color:#001;
+  background:linear-gradient(135deg,var(--cyan),var(--blue));
+  box-shadow:0 0 28px rgba(0,255,229,.75);
+}
+.brand h1{font-size:22px;margin:0;color:var(--cyan);text-shadow:0 0 18px var(--cyan)}
+.brand p{margin:2px 0 0;color:var(--muted);font-size:12px}
+.sideCard{background:var(--panel);border:1px solid rgba(255,255,255,.08);border-radius:22px;padding:14px;box-shadow:0 0 26px rgba(0,0,0,.25)}
+.sideTitle{font-weight:800;margin-bottom:8px;color:#dfefff}
+.small{font-size:12px;color:var(--muted);line-height:1.45}
+.btn{
+  border:0;border-radius:16px;padding:12px 14px;font-weight:800;cursor:pointer;color:#001;
+  background:linear-gradient(135deg,var(--cyan),var(--blue));
+  box-shadow:0 0 18px rgba(0,255,229,.35); transition:.18s transform,.18s box-shadow;
+}
+.btn:hover{transform:translateY(-1px) scale(1.02);box-shadow:0 0 28px rgba(0,255,229,.55)}
+.btn.ghost{background:rgba(255,255,255,.08);color:white;border:1px solid rgba(255,255,255,.12);box-shadow:none}
+.btn.danger{background:linear-gradient(135deg,#ff4d6d,#ff00e6);color:white}
+.main{display:flex;flex-direction:column;min-width:0}
+.topbar{
+  height:74px; display:flex;align-items:center;justify-content:space-between;gap:14px;
+  padding:14px 20px;background:rgba(0,0,0,.22);backdrop-filter:blur(16px);
+  border-bottom:1px solid rgba(255,255,255,.08)
+}
+.status{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:13px}
+.dot{width:10px;height:10px;background:#31ff7a;border-radius:50%;box-shadow:0 0 14px #31ff7a}
+#chat{flex:1;overflow-y:auto;padding:22px;display:flex;flex-direction:column;gap:16px;scroll-behavior:smooth}
+#chat::-webkit-scrollbar{width:10px}#chat::-webkit-scrollbar-thumb{background:rgba(0,255,229,.25);border-radius:99px}
+.row{display:flex;gap:10px;align-items:flex-end;animation:pop .18s ease-out}.row.userRow{justify-content:flex-end}
+@keyframes pop{from{opacity:0;transform:translateY(8px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
+.avatar{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;font-weight:900;flex:0 0 auto}
+.aiAvatar{background:#111126;color:var(--cyan);border:1px solid rgba(0,255,229,.35);box-shadow:0 0 18px rgba(0,255,229,.28)}
+.userAvatar{background:linear-gradient(135deg,var(--cyan),var(--blue));color:#001;box-shadow:0 0 18px rgba(0,255,229,.45)}
+.msg{max-width:min(720px,76%);padding:14px 16px;border-radius:22px;line-height:1.55;white-space:pre-wrap;word-wrap:break-word;font-size:15px;position:relative}
+.user{background:linear-gradient(135deg,#00ffe5,#0091ff);color:#001;border-bottom-right-radius:7px;box-shadow:0 0 22px rgba(0,255,229,.34)}
+.ai{background:rgba(255,255,255,.075);border:1px solid rgba(255,255,255,.11);border-bottom-left-radius:7px;box-shadow:0 0 22px rgba(255,0,230,.22)}
+.meta{font-size:11px;opacity:.62;margin-top:7px}.user .meta{color:#001}.ai .meta{color:#c7cbe0}
+.composer{padding:14px 18px;background:rgba(0,0,0,.34);backdrop-filter:blur(18px);border-top:1px solid rgba(0,255,229,.18);display:flex;gap:10px;align-items:flex-end}
+.inputWrap{flex:1;background:rgba(10,10,28,.9);border:1px solid rgba(0,255,229,.25);box-shadow:0 0 20px rgba(0,255,229,.12);border-radius:20px;padding:8px 12px;display:flex;align-items:center;gap:10px}
+textarea{flex:1;resize:none;border:0;outline:0;background:transparent;color:white;font:inherit;height:44px;max-height:130px;padding:10px 0}
+.send{height:48px;min-width:94px}.typing{display:inline-flex;gap:4px;align-items:center}.typing span{width:7px;height:7px;border-radius:50%;background:var(--cyan);display:inline-block;animation:bounce 1s infinite}.typing span:nth-child(2){animation-delay:.15s}.typing span:nth-child(3){animation-delay:.3s}@keyframes bounce{0%,80%,100%{transform:translateY(0);opacity:.45}40%{transform:translateY(-7px);opacity:1}}
+.code{font-family:Consolas,monospace;background:#05050f;border:1px solid rgba(0,255,229,.2);padding:10px;border-radius:12px;display:block;overflow:auto;color:#d8fff9}
+.toast{position:fixed;right:20px;top:88px;background:rgba(10,10,28,.92);border:1px solid rgba(0,255,229,.28);box-shadow:0 0 24px rgba(0,255,229,.16);padding:12px 14px;border-radius:14px;color:#dff;z-index:5;display:none}
+@media(max-width:800px){.app{grid-template-columns:1fr}.sidebar{display:none}.topbar{height:auto}.msg{max-width:86%}.send{min-width:70px}.topbar .small{display:none}}
+</style>
+</head>
+<body>
+<div id="particles"></div>
+<div class="toast" id="toast"></div>
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand"><div class="logo">B</div><div><h1>brbrs AI</h1><p>Pro Neon Chat</p></div></div>
+    <div class="sideCard"><div class="sideTitle">Özellikler</div><div class="small">Sağ/sol baloncuk, Firebase kayıt, sohbet geçmişi, Groq AI, Render uyumlu, mobil uyumlu.</div></div>
+    <button class="btn" onclick="newChat()">Yeni Sohbet</button>
+    <button class="btn ghost" onclick="loadFirebaseHistory()">Firebase Geçmişi Çek</button>
+    <button class="btn danger" onclick="clearLocalChat()">Ekranı Temizle</button>
+    <div class="sideCard"><div class="sideTitle">Durum</div><div class="small" id="dbStatus">Firebase hazırlanıyor...</div></div>
+  </aside>
+  <main class="main">
+    <div class="topbar">
+      <div><b>brbrs AI</b><div class="small">Aynı linkten çalışır: Render’da /chat, lokalde localhost</div></div>
+      <div class="status"><span class="dot"></span><span id="statusText">Hazır</span></div>
+    </div>
+    <div id="chat"></div>
+    <div class="composer">
+      <div class="inputWrap"><textarea id="input" placeholder="Mesaj yaz... Enter gönderir, Shift+Enter alt satır"></textarea></div>
+      <button class="btn send" onclick="sendMessage()">Gönder</button>
+    </div>
+  </main>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
+import { getDatabase, ref, push, set, onChildAdded, query, limitToLast, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyABqkhpL1SMRzRJ9GQLjjZE2IryqpAvMPw",
+  authDomain: "pixelroom-ae218.firebaseapp.com",
+  databaseURL: "https://pixelroom-ae218-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "pixelroom-ae218",
+  storageBucket: "pixelroom-ae218.firebasestorage.app",
+  messagingSenderId: "720297722320",
+  appId: "1:720297722320:web:c815edae99d1efa7ff39d5",
+  measurementId: "G-HD8901B19M"
+};
+
+let db = null;
+let firebaseReady = false;
+let sessionId = localStorage.getItem("brbrs_session") || crypto.randomUUID();
+localStorage.setItem("brbrs_session", sessionId);
+try{
+  const app = initializeApp(firebaseConfig);
+  db = getDatabase(app);
+  firebaseReady = true;
+  document.getElementById("dbStatus").textContent = "Firebase bağlı. Mesajlar kaydediliyor.";
+}catch(e){
+  document.getElementById("dbStatus").textContent = "Firebase bağlanamadı: " + e.message;
+}
+
+const input = document.getElementById("input");
+const chat = document.getElementById("chat");
+const statusText = document.getElementById("statusText");
+const toast = document.getElementById("toast");
+let memory = JSON.parse(localStorage.getItem("brbrs_memory") || "[]");
+let isSending = false;
+
+function scrollToBottom(smooth = true){
+  chat.scrollTo({
+    top: chat.scrollHeight,
+    behavior: smooth ? "smooth" : "auto"
+  });
+}
+
+function now(){return new Date().toLocaleTimeString("tr-TR",{hour:"2-digit",minute:"2-digit"});}
+function showToast(t){toast.textContent=t;toast.style.display="block";setTimeout(()=>toast.style.display="none",2200)}
+function escapeHtml(s){return String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c]));}
+function format(text){
+  let safe = escapeHtml(text);
+  safe = safe.replace(/```([\s\S]*?)```/g,(_,code)=>`<span class="code">${code}</span>`);
+  safe = safe.replace(/`([^`]+)`/g,"<b>$1</b>");
+  return safe;
+}
+function addMessage(text,type,loading=false,save=true){
+  const row=document.createElement("div"); row.className="row "+(type==="user"?"userRow":"aiRow");
+  const avatar=document.createElement("div"); avatar.className="avatar "+(type==="user"?"userAvatar":"aiAvatar"); avatar.textContent=type==="user"?"S":"AI";
+  const bubble=document.createElement("div"); bubble.className="msg "+type;
+  if(loading){bubble.innerHTML=`<b>brbrs AI düşünüyor</b><br><span class="typing"><span></span><span></span><span></span></span>`}
+  else{bubble.innerHTML=`${format(text)}<div class="meta">${now()}</div>`}
+  if(type==="user"){row.appendChild(bubble);row.appendChild(avatar)}else{row.appendChild(avatar);row.appendChild(bubble)}
+  chat.appendChild(row); scrollToBottom(true);
+  if(save && !loading){saveMessage(type,text)}
+  return bubble;
+}
+function saveMemory(role,content){
+  memory.push({role,content}); memory=memory.slice(-12); localStorage.setItem("brbrs_memory",JSON.stringify(memory));
+}
+async function saveMessage(type,text){
+  saveMemory(type==="ai"?"assistant":"user",text);
+  if(!firebaseReady) return;
+  try{
+    const r = push(ref(db, `brbrsAI/chats/${sessionId}/messages`));
+    await set(r,{type,text,time:Date.now(),createdAt:serverTimestamp()});
+  }catch(e){console.warn("Firebase save error",e)}
+}
+window.sendMessage = async function(){
+  if(isSending) return;
+  const text=input.value.trim(); if(!text) return;
+  input.value=""; input.style.height="44px"; addMessage(text,"user");
+  const loading=addMessage("","ai",true,false); statusText.textContent="Düşünüyor..."; isSending=true;
+  try{
+    const res=await fetch("/chat",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({message:text,history:memory})});
+    const data=await res.json();
+    loading.innerHTML=`${format(data.reply || "Cevap yok kanka.")}<div class="meta">${now()}</div>`;
+    await saveMessage("ai",data.reply || "Cevap yok kanka.");
+  }catch(e){
+    const msg="Sunucuya bağlanamadım kanka. Render deploy/link veya /chat route kontrol et.";
+    loading.innerHTML=`${msg}<div class="meta">${now()}</div>`;
+  }finally{isSending=false;statusText.textContent="Hazır";scrollToBottom(true)}
+}
+input.addEventListener("keydown",e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();window.sendMessage()}});
+input.addEventListener("input",()=>{input.style.height="44px";input.style.height=Math.min(input.scrollHeight,130)+"px"});
+window.newChat=function(){sessionId=crypto.randomUUID();localStorage.setItem("brbrs_session",sessionId);memory=[];localStorage.removeItem("brbrs_memory");chat.innerHTML="";addMessage("Yeni sohbet açıldı kanka 🔥","ai",false,false)}
+window.clearLocalChat=function(){chat.innerHTML="";showToast("Ekran temizlendi")}
+window.loadFirebaseHistory=function(){
+  if(!firebaseReady){showToast("Firebase bağlı değil");return}
+  chat.innerHTML="";
+  const q=query(ref(db,`brbrsAI/chats/${sessionId}/messages`),limitToLast(40));
+  onChildAdded(q,snap=>{const m=snap.val(); if(m?.text){ addMessage(m.text,m.type,false,false); scrollToBottom(true); }});
+  showToast("Geçmiş çekiliyor")
+}
+addMessage("Selam kanka, brbrs AI Pro hazır. Mesajlar sağ/sol baloncuklu ve Firebase'e kaydoluyor. 🚀","ai",false,false);
+</script>
+</body>
+</html>
